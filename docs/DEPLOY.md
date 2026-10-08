@@ -37,6 +37,8 @@ Không cần máy developer bật sau khi deploy. Không cần App Store/Google 
 
 ## Trạng thái triển khai
 
-URL production do chủ app cung cấp: **https://qltaichinh-web.pages.dev/**. Ngày 08/10/2026 đã xác nhận HTTPS, headers và **6/6 E2E V1 trên URL thật** qua desktop/mobile Chromium, gồm offline và backup/restore. Trước lần cập nhật mã V2, site vẫn hiển thị V1; Publish môi trường Codex không tự cập nhật code trên Cloudflare. Chỉ xác nhận V2/biểu đồ đã deploy sau khi bản build mới xuất hiện trên URL này. Xem [VALIDATION](VALIDATION.md) để biết phạm vi từng lần kiểm tra. iPhone/Safari thật chưa kiểm chứng.
+URL production: **https://qltaichinh-web.pages.dev/**. Ngày 08/10/2026, sau khi push commit `8ae280d` lên main, Cloudflare đã tự triển khai V2 frontend + Pie Chart. **8/8 E2E trên URL thật** qua desktop/mobile Chromium đạt, gồm offline, backup/restore và biểu đồ. Fixture IndexedDB V1 nâng lên V2 giữ nguyên dữ liệu/số dư. Xem [VALIDATION](VALIDATION.md) để biết phạm vi kiểm tra. iPhone/Safari thật chưa kiểm chứng.
+
+Bản deploy hiện hiển thị **“Chưa cấu hình Supabase”**: chế độ local và biểu đồ hoạt động; đăng nhập/đồng bộ chưa được bật. Cần tạo project, chạy migration và thêm public URL/key vào Cloudflare rồi redeploy theo hướng dẫn bên dưới. Publish môi trường Codex chỉ cập nhật môi trường làm việc; push code lên main mới kích hoạt cập nhật Cloudflare.
 
 V2 cần chạy migration, cấu hình Auth redirects và build frontend với public Supabase URL/key. Xem [SETUP.md](v2/SETUP.md). Chưa có project Supabase của người dùng trong môi trường; không đánh dấu deployment hoặc iOS đã đạt từ kết quả test mô phỏng.

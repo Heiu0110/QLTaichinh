@@ -1,3 +1,13 @@
+# V2 + biểu đồ đã triển khai — 08/10/2026
+
+Đã push commit `8ae280d8a40ed3156fb3c71d7898025c1a2db2f6` lên `origin/main`; native Git xác nhận remote ref. Cloudflare đã tự cập nhật tại **https://qltaichinh-web.pages.dev/**, entry asset `index-DBVeIlf6.js`, có `ExpensePieChart-PBfC_Bnh.js`. **8/8 E2E trên URL production mới đã đạt** ở desktop/mobile Chromium: CRUD, backup/restore, reload, responsive, PWA offline và Pie Chart đổi tháng/chọn danh mục/ngoại trừ thu nhập–chuyển tiền–xóa mềm.
+
+Kiểm tra bổ sung trên origin production với native IndexedDB fixture V1 trong context riêng: version 10 (Dexie schema 1) nâng lên version 20 (schema 2); toàn bộ account/transaction payload và ID giữ nguyên; số dư 75.000 VND, biểu đồ khoản chi 25.000 VND đúng sau reload. Đây là fixture nâng schema trình duyệt, không phải thử nâng service worker trên điện thoại của người dùng.
+
+Màn hình Cài đặt của bản đã deploy xác nhận **“Chưa cấu hình Supabase”**. V2 frontend và biểu đồ đã có trên website nhưng cloud sync chưa bật. Chưa kiểm chứng Auth/email/RLS trên project Supabase thực hoặc iPhone/Safari. V3 chưa được triển khai. GitHub API vẫn bị Forbidden, nên không khẳng định CI GitHub đã đạt từ kết quả local.
+
+Kết quả trước push: 49/49 unit tests, build và 8/8 E2E local đạt. Các đoạn phía dưới là lịch sử trước khi cập nhật repo/deployment, không phải trạng thái mới nhất.
+
 # Kiểm chứng sau Publish môi trường — 08/10/2026
 
 Quyền truy cập `https://qltaichinh-web.pages.dev/` đã có hiệu lực: HTTPS trả 200, header CSP và assets đọc được. Trình duyệt xác nhận bản đang chạy trước lần cập nhật này là **V1**, không có đăng nhập/cloud hoặc Pie Chart mới. Toàn bộ **6/6 E2E V1 trên URL thật** đã đạt ở desktop/mobile Chromium: CRUD, tính tiền, backup/restore, reload, offline, routing và viewport. Test dùng browser context riêng cùng dữ liệu giả; không thay dữ liệu cá nhân của chủ app và không thay thế thử iPhone/Safari.

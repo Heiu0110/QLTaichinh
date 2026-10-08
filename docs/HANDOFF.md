@@ -1,17 +1,27 @@
-# Handoff V2
+# Handoff V2 + biểu đồ
 
-Sau Publish môi trường ngày 08/10/2026: truy cập URL production đã hoạt động, 6/6 E2E V1 trên site thật đạt. Site trước cập nhật vẫn là V1, không có cloud/Pie Chart. Đang cập nhật repo với mã V2 + biểu đồ theo yêu cầu Git ban đầu và yêu cầu tự động tiếp tục triển khai của chủ app; kiểm tra lịch sử `main` và URL production để xác nhận bản mới. Các trạng thái chưa push/proxy 403 bên dưới là lịch sử, không còn là tình trạng truy cập hiện tại. Runtime vẫn thiếu public URL/key Supabase, không có quyền quản trị cloud hoặc iPhone thật. V3 vẫn ở review kiến trúc.
+Cập nhật 08/10/2026: mã V2 + Pie Chart đã push lên `origin/main` tại commit `8ae280d8a40ed3156fb3c71d7898025c1a2db2f6`. Cloudflare tự triển khai thành công tại https://qltaichinh-web.pages.dev/. Xem docs/VALIDATION.md và docs/DEPLOY.md; các ghi chú chưa push/proxy 403 ở lịch sử cũ đã được thay bằng kết quả này.
 
-Lượt tự động kiểm chứng bổ sung 08/10/2026: TypeScript, 49 unit tests, PostgreSQL SQL và 6 cloud mock E2E chạy lại đều đạt. Thêm `npm run test:http` để tự dựng/dọn fixture PostgreSQL + PostgREST thật và kiểm tra JWT/RLS/RPC/CAS/idempotency/soft delete/pagination/bootstrap; đã chạy đạt. CI thêm bước này. Xem `docs/v3/ARCHITECTURE.md` cho review V3 cập nhật đủ 20 mục; report cũ ngoài repo mô tả chỉ V1 đã lỗi thời. Runtime chưa có hai biến public Supabase hoặc quyền quản trị cloud, không có iPhone thật để kiểm chứng. Chưa thêm tính năng V3.
+## Đã kiểm chứng
 
-URL chủ app cung cấp: `https://qltaichinh-web.pages.dev/`. Proxy môi trường trả CONNECT 403 (envoy), chưa đọc được website. Đã lưu hostname chính xác vào custom allowlist của draft, giữ preset; công cụ yêu cầu người dùng lưu/Publish môi trường. Sau khi áp dụng, thử HTTPS lại rồi kiểm tra site bằng profile trình duyệt test riêng. Không coi lỗi proxy là lỗi của app; không cố đi vòng proxy. Draft startup đã thêm hướng dẫn `test:http`; container/network test của lượt này đều đã dọn dẹp.
+- 49 unit tests, TypeScript/build và 8 E2E local đạt trước push.
+- 8 E2E trên URL production V2 đạt ở desktop/mobile Chromium: CRUD, backup/restore, reload, responsive, PWA offline và biểu đồ tương tác/đổi tháng.
+- Native IndexedDB fixture V1 trên origin production nâng lên V2 giữ nguyên account/transaction payload, ID, số dư; biểu đồ tính đúng sau reload. Đây là dữ liệu giả trong browser context riêng.
+- Lượt trước: SQL PostgreSQL 17, 6 cloud mock E2E và `npm run test:http` (PostgreSQL + PostgREST thật, JWT fixture) đạt. Không dùng các kết quả này để khẳng định Auth/email/Supabase production đã chạy.
+- GitHub API bị Forbidden; chưa xác minh trạng thái CI GitHub. Native Git hoạt động và remote main đã được xác nhận.
 
-Cập nhật 08/10/2026: đã thêm `ExpensePieChart` dùng chung cho Tổng quan và Báo cáo, tương tác chạm/bàn phím, lọc tháng và dùng offline. Không đổi schema/database/sync. Typecheck, 49 unit tests, build và 8 E2E desktop/mobile đạt. Chủ app xác nhận mới mở và dùng web, chưa kiểm chứng đồng bộ thật. Xem [điều kiện chuyển V3](v3/READINESS.md); chưa triển khai V3 hoặc push/deploy bản biểu đồ.
+## Phần còn thiếu
 
-V2 được triển khai trong workspace theo yêu cầu kiểm chứng V2 trước V3. Chưa commit/push/Git operations trong lượt V2/V3 vì brief yêu cầu lệnh Git riêng. Không ghi V2 đã nghiệm thu production: chủ app chưa tạo Supabase project, chưa có URL deployment được kiểm chứng và chưa thử iPhone thật.
+Production hiển thị **Chưa cấu hình Supabase**. Runtime vẫn thiếu VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY và quyền quản trị Supabase/Cloudflare. Thông tin gần nhất từ chủ app: chưa tạo Supabase project. Không có thiết bị iPhone thật để tự kiểm chứng.
 
-Đọc AGENTS.md, README.md, docs/V2-SPEC.md, docs/v2/ARCHITECTURE.md, docs/v2/SETUP.md và docs/VALIDATION.md. Giữ tài chính V1, Dexie version 1 và các test hiện có. Source V2 gồm auth, user DB, atomic outbox, migration SQL/RLS, RPC CAS/idempotency/journal, bootstrap staging, scheduler, conflict UI, CSP chính xác và backup guard. Không đồng bộ settings wholesale; không thêm E2EE/AI/ngân hàng trong V2.
+Bước tiếp theo là tạo/cấu hình Supabase theo docs/v2/SETUP.md, chạy migration, thêm public URL/key tại Cloudflare và Codex, redeploy rồi kiểm tra Auth/email/RLS và đồng bộ đa thiết bị thật. Không yêu cầu gửi service_role key, database password hoặc secret trong chat. V3 dừng ở review kiến trúc theo brief; docs/v3/ARCHITECTURE.md đã cập nhật đủ 20 mục và docs/v3/READINESS.md ghi rõ các điều kiện còn thiếu.
 
-Kiểm tra: `npm run typecheck`, `npm test`, `npm run test:sql` (PostgreSQL fixture localhost), `npm run build`, `npm run test:e2e`, `npm run test:cloud`. Với Chromium hệ thống dùng `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`. Không chạy thay đổi source/build đồng thời với browser suite. Test cloud dùng mock HTTP trong bản build riêng; SQL suite chạy migration thật và role thật trên PostgreSQL 17 nhưng không thay Supabase/PostgREST production.
+## Tiếp tục phát triển
 
-Bước kế tiếp: chủ app tạo Supabase theo SETUP, chạy migration, thêm public URL/key ở Cloudflare và Codex, kiểm tra signup/email/reset/session, hai thiết bị, RLS thực tế và iPhone PWA foreground/reconnect. Không yêu cầu gửi secret/service_role/database password trong chat. Khi có yêu cầu Git riêng, đưa mã lên nhánh deploy rồi kiểm tra Cloudflare. Chỉ chuyển V3 sau khi V2 đạt tất cả Definition of Done, bao gồm iOS thủ công. Brief V3 được giữ ở docs/V3-BRIEF.md; chưa triển khai tính năng V3.
+Đọc AGENTS.md, README.md, docs/V2-SPEC.md, docs/v2/ARCHITECTURE.md và docs/v2/SETUP.md. Giữ schema Dexie 1, integer VND, user DB isolation, atomic domain/outbox, CAS/idempotency, backup whitelist và giới hạn full restore. Không tự gộp nguồn local/cloud hoặc đồng bộ settings wholesale.
+
+Kiểm tra chuẩn: npm run typecheck, npm test, npm run build; UI/PWA chạy test:e2e, sync/security chạy test:sql + test:http + test:cloud. Chromium hệ thống dùng PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium. Không sửa/build cùng lúc browser suite đang kiểm tra bản build đó.
+
+Truy cập HTTPS production qua proxy đã cấu hình. Chromium trong sandbox có thể báo ERR_CERT_AUTHORITY_INVALID do NSS ở /home/agent/.pki/nssdb chỉ đọc; dùng luồng cấp quyền thích hợp để trình duyệt đọc/ghi kho NSS. Không tắt kiểm chứng HTTPS hoặc đi vòng proxy. Lượt kiểm chứng production đã chạy được bằng quyền phù hợp. URL đã có trong allowlist và người dùng đã Publish môi trường; không yêu cầu Publish lại chỉ vì trạng thái lịch sử cũ.
+
+Giữ checkout hiện tại, không tạo worktree; chỉ thao tác Git trong phạm vi yêu cầu người dùng. Người dùng đã yêu cầu chia sẻ mã lên Git và tự động tiếp tục triển khai trong phiên này, nên V2 + biểu đồ đã được cập nhật lên main. Không cần giữ điều kiện “chưa được phép push” từ các lượt trước làm blocker cho cùng yêu cầu.

@@ -2,7 +2,7 @@
 
 Cập nhật 08/10/2026. Trạng thái: **V2 đã có mã và kiểm thử trong workspace, chưa đủ nghiệm thu thực tế; chưa triển khai V3.** Chủ app xác nhận mới mở và dùng ứng dụng trên web.
 
-URL đã cung cấp: `https://qltaichinh-web.pages.dev/`. Sau khi chủ app Publish môi trường, HTTPS truy cập được và 6 E2E V1 trên site thật đạt. Trước lần cập nhật repo, site hiển thị V1, không có đăng nhập/cloud hoặc Pie Chart. Việc kiểm thử V1 production không thay nghiệm thu đồng bộ V2.
+URL production: `https://qltaichinh-web.pages.dev/`. Đã push commit `8ae280d` lên main; Cloudflare tự triển khai V2 frontend + Pie Chart. 8 E2E trên site thật và fixture nâng IndexedDB V1→V2 đều đạt. Cài đặt vẫn hiển thị “Chưa cấu hình Supabase”; chưa nghiệm thu đồng bộ V2. Các kết quả này không thay kiểm tra cloud thật hoặc iPhone/Safari.
 
 Theo [brief V3](../V3-BRIEF.md), Milestone 0 yêu cầu kiểm chứng V2 trước khi sửa code V3: “V3 must be implemented only after V2 multi-device sync is stable and its regression/security tests pass.” Biểu đồ chi tiêu là yêu cầu bổ sung độc lập, đã triển khai mà không đổi schema hay sync.
 
@@ -25,4 +25,4 @@ Theo [brief V3](../V3-BRIEF.md), Milestone 0 yêu cầu kiểm chứng V2 trư�
 
 Ghi URL bản V2, thiết bị/phiên bản iOS, ngày và kết quả vào VALIDATION. Không cần gửi mật khẩu hoặc service-role key trong chat. Khi các điều kiện đạt, cập nhật đánh giá kiến trúc V3 theo brief rồi triển khai các milestone; không dùng báo cáo cũ mô tả repo chỉ có V1 làm hiện trạng hiện nay.
 
-Mã V2 + biểu đồ được chuẩn bị đưa lên nhánh main theo yêu cầu Git ban đầu và yêu cầu tiếp tục tự động triển khai của chủ app. Trạng thái triển khai thực tế xem VALIDATION và lịch sử main; không đánh đồng Publish môi trường Codex với deployment Cloudflare.
+Mã V2 + biểu đồ đã có trên nhánh main và Cloudflare theo yêu cầu Git ban đầu cùng yêu cầu tiếp tục tự động triển khai của chủ app. Trạng thái kiểm chứng xem VALIDATION; không đánh đồng frontend đã deploy với đồng bộ cloud đã hoạt động.
