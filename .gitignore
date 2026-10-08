@@ -9,3 +9,5 @@ playwright-report/
 *.tsbuildinfo
 .DS_Store
 .wrangler/
+
+dist-cloud-test/

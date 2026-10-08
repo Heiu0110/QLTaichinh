@@ -13,7 +13,8 @@
     "isolatedModules": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": ["vite/client", "vite-plugin-pwa/client", "node"]
+    "types": ["vite/client", "vite-plugin-pwa/client", "node"],
+    "allowImportingTsExtensions": true
   },
   "include": ["src", "vite.config.ts"]
 }

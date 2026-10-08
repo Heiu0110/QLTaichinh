@@ -99,9 +99,22 @@ export class BackupService {
     });
   }
   async replace(input: unknown) {
+    if (this.db.cloud)
+      throw new Error(
+        'Không thể thay toàn bộ dữ liệu của hồ sơ cloud. Đăng xuất và khôi phục vào sổ local riêng.',
+      );
     const backup = validateBackup(input);
     await this.db.transaction('rw', this.db.tables, async () => {
-      for (const table of this.db.tables) {
+      await this.db.assertWritable();
+      for (const name of [
+        'accounts',
+        'categories',
+        'transactions',
+        'budgets',
+        'savingsGoals',
+        'settings',
+      ] as const) {
+        const table = this.db.table(name);
         await table.clear();
         await table.bulkAdd(backup.data[table.name as keyof FinanceData]);
       }

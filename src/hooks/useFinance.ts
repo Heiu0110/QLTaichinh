@@ -1,7 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { type FinanceData } from '../types/models';
 export function useFinance(): { data?: FinanceData; error?: string } {
+  const { finance } = useLocalData();
   return useLiveQuery(
     async () => {
       try {
@@ -12,7 +13,7 @@ export function useFinance(): { data?: FinanceData; error?: string } {
         };
       }
     },
-    [],
+    [finance],
     {},
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp, type Editor } from '../app/context';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { requestPersistence } from '../services/storage/storage';
 import {
   stamp,
@@ -44,6 +44,7 @@ export function Editors({ editor, onClose }: { editor: Editor; onClose: () => vo
   );
 }
 function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
+  const { finance } = useLocalData();
   const { data } = useApp();
   const save = useSave(onDone);
   const [type, setType] = useState<Transaction['type']>(value?.type ?? 'expense');
@@ -67,6 +68,7 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
         note,
       },
       !!value,
+      value,
     );
   });
   return (
@@ -161,6 +163,7 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
   );
 }
 function AccountForm({ value, onDone, onClose }: FormProps<Account>) {
+  const { finance } = useLocalData();
   const save = useSave(onDone);
   const [name, setName] = useState(value?.name ?? '');
   const [type, setType] = useState<Account['type']>(value?.type ?? 'cash');
@@ -178,6 +181,7 @@ function AccountForm({ value, onDone, onClose }: FormProps<Account>) {
             currency: 'VND',
           },
           !!value,
+          value,
         ),
       )}
     >
@@ -211,6 +215,7 @@ function AccountForm({ value, onDone, onClose }: FormProps<Account>) {
   );
 }
 function CategoryForm({ value, onDone, onClose }: FormProps<Category>) {
+  const { finance } = useLocalData();
   const save = useSave(onDone);
   const [name, setName] = useState(value?.name ?? '');
   const [type, setType] = useState<Category['type']>(value?.type ?? 'expense');
@@ -218,7 +223,7 @@ function CategoryForm({ value, onDone, onClose }: FormProps<Category>) {
     <form
       className="editor-form"
       onSubmit={save.submit(() =>
-        finance.saveCategory({ ...(value ?? stamp()), name, type }, !!value),
+        finance.saveCategory({ ...(value ?? stamp()), name, type }, !!value, value),
       )}
     >
       <Field label="Tên danh mục">
@@ -245,6 +250,7 @@ function CategoryForm({ value, onDone, onClose }: FormProps<Category>) {
   );
 }
 function BudgetForm({ value, onDone, onClose }: FormProps<Budget>) {
+  const { finance } = useLocalData();
   const { data } = useApp();
   const save = useSave(onDone);
   const [categoryId, setCategoryId] = useState(value?.categoryId ?? '');
@@ -263,6 +269,7 @@ function BudgetForm({ value, onDone, onClose }: FormProps<Budget>) {
             month,
           },
           !!value,
+          value,
         ),
       )}
     >
@@ -296,6 +303,7 @@ function BudgetForm({ value, onDone, onClose }: FormProps<Budget>) {
   );
 }
 function GoalForm({ value, onDone, onClose }: FormProps<SavingsGoal>) {
+  const { finance } = useLocalData();
   const save = useSave(onDone);
   const [name, setName] = useState(value?.name ?? '');
   const [target, setTarget] = useState(String(value?.targetAmount ?? ''));
@@ -314,6 +322,7 @@ function GoalForm({ value, onDone, onClose }: FormProps<SavingsGoal>) {
             deadline: deadline || undefined,
           },
           !!value,
+          value,
         ),
       )}
     >

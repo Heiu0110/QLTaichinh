@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useApp } from '../app/context';
 import { accountBalance, expensesByCategory, monthlyTotals } from '../utils/calculations';
 import { currency, currentMonth, monthLabel } from '../utils/format';
-import { Empty, Field, PageHeading, Progress } from '../components/ui';
+import { Field, PageHeading } from '../components/ui';
+import { ExpensePieChart } from '../components/ExpensePieChart';
 export function Reports() {
   const { data } = useApp();
   const [month, setMonth] = useState(currentMonth());
@@ -52,22 +53,7 @@ export function Reports() {
           <div className="section-heading">
             <h2>Chi tiêu theo danh mục</h2>
           </div>
-          {categories.map((c) => (
-            <div className="report-category" key={c.id}>
-              <div className="section-heading">
-                <span>{c.name}</span>
-                <strong>{currency(c.amount)}</strong>
-              </div>
-              <Progress
-                value={totals.expense ? (c.amount / totals.expense) * 100 : 0}
-                label={c.name}
-              />
-              <small className="muted">
-                {totals.expense ? Math.round((c.amount / totals.expense) * 100) : 0}% chi tiêu tháng
-              </small>
-            </div>
-          ))}
-          {!categories.length && <Empty title="Chưa có chi tiêu trong tháng" />}
+          <ExpensePieChart key={month} categories={categories} month={month} />
         </section>
         <section className="panel">
           <div className="section-heading">

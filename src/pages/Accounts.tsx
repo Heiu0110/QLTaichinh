@@ -2,7 +2,7 @@ import { Wallet, Landmark, CreditCard, Smartphone, CircleDollarSign } from 'luci
 import { useApp } from '../app/context';
 import { accountBalance, sumMoney } from '../utils/calculations';
 import { currency } from '../utils/format';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { AddButton, Empty, PageHeading } from '../components/ui';
 import { accountTypeNames } from '../components/Editors';
 import { RecordActions } from '../components/RecordActions';
@@ -14,6 +14,7 @@ const icons = {
   other: CircleDollarSign,
 };
 export function Accounts() {
+  const { finance } = useLocalData();
   const { data, openEditor } = useApp();
   return (
     <>

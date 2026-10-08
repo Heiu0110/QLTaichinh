@@ -1,3 +1,7 @@
+import { useLiveQuery } from 'dexie-react-hooks';
+import { useLocalData } from '../db/context/LocalDataProvider';
+import { AuthPanel } from '../auth/AuthPanel';
+import { SyncPanel } from '../sync/SyncPanel';
 import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useRegisterSW } from 'virtual:pwa-register/react';
@@ -73,6 +77,27 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: boolean 
   }
 }
 export function App() {
+  const { db } = useLocalData();
+  const ready = useLiveQuery(
+    async () => !db.cloud || (await db.syncState.get('ready'))?.value === 'true',
+    [db],
+  );
+  if (ready === undefined)
+    return (
+      <main className="startup-state">
+        <p>Đang mở dữ liệu…</p>
+      </main>
+    );
+  if (!ready)
+    return (
+      <ErrorBoundary>
+        <main className="onboarding-content">
+          <h1>Thiết lập sổ cloud</h1>
+          <AuthPanel />
+          <SyncPanel />
+        </main>
+      </ErrorBoundary>
+    );
   return (
     <ErrorBoundary>
       <FinanceApp />
@@ -80,6 +105,7 @@ export function App() {
   );
 }
 function FinanceApp() {
+  const { db } = useLocalData();
   const { data, error } = useFinance();
   const [editor, setEditor] = useState<Editor>();
   const [message, setMessage] = useState('');
@@ -164,9 +190,10 @@ function FinanceApp() {
           <div className="sidebar-bottom">
             <ShieldCheck size={19} />
             <span>
-              Dữ liệu riêng tư<small>Lưu trên thiết bị của bạn</small>
+              Dữ liệu riêng tư
+              <small>{db.cloud ? 'Local + đồng bộ cloud' : 'Lưu trên thiết bị của bạn'}</small>
             </span>
-            <span className="version-tag">V1</span>
+            <span className="version-tag">V2</span>
           </div>
         </aside>
         <div className="workspace">
@@ -181,7 +208,13 @@ function FinanceApp() {
             </div>
             <div className={`connection ${online ? '' : 'offline'}`}>
               {online ? <span className="status-dot" /> : <WifiOff size={15} />}
-              <span>{online ? 'Lưu trên thiết bị' : 'Đang dùng offline'}</span>
+              <span>
+                {online
+                  ? db.cloud
+                    ? 'Xem đồng bộ ở Cài đặt'
+                    : 'Lưu trên thiết bị'
+                  : 'Đang dùng offline'}
+              </span>
             </div>
             <span className="avatar" aria-hidden="true">
               ST

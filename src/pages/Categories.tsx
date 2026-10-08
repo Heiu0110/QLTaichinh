@@ -1,8 +1,9 @@
 import { useApp } from '../app/context';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { AddButton, Empty, PageHeading } from '../components/ui';
 import { RecordActions } from '../components/RecordActions';
 export function Categories() {
+  const { finance } = useLocalData();
   const { data, openEditor } = useApp();
   return (
     <>

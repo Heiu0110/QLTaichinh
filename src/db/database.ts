@@ -8,6 +8,7 @@ import {
   type SavingsGoal,
   type Setting,
 } from '../types/models';
+import type { Mutation, RemoteMeta, SyncState, SyncConflict } from '../sync/syncTypes';
 const expenseNames = [
   'Ăn uống',
   'Di chuyển',
@@ -27,8 +28,26 @@ export class FinanceDatabase extends Dexie {
   budgets!: Table<Budget, string>;
   savingsGoals!: Table<SavingsGoal, string>;
   settings!: Table<Setting, string>;
-  constructor(name = 'sotien-v1') {
+  syncQueue!: Table<Mutation, string>;
+  syncRemoteMeta!: Table<RemoteMeta, [string, string]>;
+  syncState!: Table<SyncState, string>;
+  syncConflicts!: Table<SyncConflict, string>;
+  readonly cloud: boolean;
+  private retired = false;
+  retire() {
+    this.retired = true;
+    this.close();
+  }
+  async assertWritable() {
+    if (this.retired) throw new Error('Phiên dữ liệu đã đóng. Hãy mở lại màn hình.');
+    if (await this.syncState.get('claimedBy'))
+      throw new Error('Sổ local này đã được giữ riêng cho tài khoản cloud.');
+    if (this.cloud && (await this.syncState.get('ready'))?.value !== 'true')
+      throw new Error('Hoàn tất thiết lập đồng bộ trước khi sửa dữ liệu.');
+  }
+  constructor(name = 'sotien-v1', options: { cloud?: boolean; seed?: boolean } = {}) {
     super(name);
+    this.cloud = options.cloud ?? false;
     // Version 1 is immutable. Future migrations add .version(2).stores(...).upgrade(...).
     this.version(1).stores({
       accounts: 'id, type, updatedAt',
@@ -38,7 +57,15 @@ export class FinanceDatabase extends Dexie {
       savingsGoals: 'id, updatedAt',
       settings: 'id, &key, updatedAt',
     });
+    this.version(2).stores({
+      syncQueue:
+        '&mutationId, [entityType+entityId], status, [status+nextAttemptAt], dependsOnMutationId, localOrder',
+      syncRemoteMeta: '[entityType+entityId]',
+      syncState: '&key',
+      syncConflicts: '&id, [entityType+entityId], status, mutationId',
+    });
     this.on('populate', (tx) => {
+      if (options.seed === false || this.cloud) return;
       const categories: Category[] = [
         ...expenseNames.map((name) => ({ ...stamp(), name, type: 'expense' as const })),
         ...incomeNames.map((name) => ({ ...stamp(), name, type: 'income' as const })),
@@ -54,3 +81,6 @@ export class FinanceDatabase extends Dexie {
   }
 }
 export const database = new FinanceDatabase();
+
+export const userDatabaseName = (projectScope: string, userId: string) =>
+  `sotien-user-${encodeURIComponent(projectScope)}-${userId}`;

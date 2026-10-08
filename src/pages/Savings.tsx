@@ -1,10 +1,11 @@
 import { Flag } from 'lucide-react';
 import { useApp } from '../app/context';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { currency, dateLabel, today } from '../utils/format';
 import { AddButton, Empty, PageHeading, Progress } from '../components/ui';
 import { RecordActions } from '../components/RecordActions';
 export function Savings() {
+  const { finance } = useLocalData();
   const { data, openEditor } = useApp();
   return (
     <>

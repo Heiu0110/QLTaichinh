@@ -1,3 +1,4 @@
+import { ExpensePieChart } from '../components/ExpensePieChart';
 import { Link } from 'react-router-dom';
 import {
   ArrowDownLeft,
@@ -11,6 +12,7 @@ import { useApp } from '../app/context';
 import { currency, currentMonth, monthLabel } from '../utils/format';
 import {
   accountBalance,
+  expensesByCategory,
   budgetUsage,
   filterTransactions,
   monthlyTotals,
@@ -22,6 +24,7 @@ export function Dashboard() {
   const { data, openEditor } = useApp();
   const month = currentMonth();
   const totals = monthlyTotals(data.transactions, month);
+  const categoryExpenses = expensesByCategory(data.transactions, data.categories, month);
   const assets = sumMoney(data.accounts.map((a) => accountBalance(a, data.transactions)));
   const budgets = data.budgets.filter((b) => b.month === month);
   const overall = budgets.find((b) => !b.categoryId);
@@ -94,6 +97,16 @@ export function Dashboard() {
           </div>
         </section>
       </div>
+      <section className="panel dashboard-expenses" aria-label="Chi tiêu theo danh mục">
+        <div className="section-heading">
+          <h2>Chi tiêu theo danh mục</h2>
+          <Link className="text-link" to="/reports">
+            Xem báo cáo <ChevronRight size={16} />
+          </Link>
+        </div>
+        <p className="muted capitalize">{monthLabel(month)}</p>
+        <ExpensePieChart key={month} categories={categoryExpenses} month={month} />
+      </section>
       <div className="dashboard-bottom">
         <section className="panel">
           <div className="section-heading">

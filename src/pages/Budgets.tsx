@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useApp } from '../app/context';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { budgetUsage } from '../utils/calculations';
 import { currency, currentMonth } from '../utils/format';
 import { AddButton, Empty, Field, PageHeading, Progress } from '../components/ui';
 import { RecordActions } from '../components/RecordActions';
 export function Budgets() {
+  const { finance } = useLocalData();
   const { data, openEditor } = useApp();
   const [month, setMonth] = useState(currentMonth());
   const budgets = data.budgets.filter((b) => b.month === month);

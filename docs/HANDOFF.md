@@ -1,17 +1,17 @@
-# Handoff cho các phiên Codex tiếp theo
+# Handoff V2
 
-## Đã xây dựng
+Sau Publish môi trường ngày 08/10/2026: truy cập URL production đã hoạt động, 6/6 E2E V1 trên site thật đạt. Site trước cập nhật vẫn là V1, không có cloud/Pie Chart. Đang cập nhật repo với mã V2 + biểu đồ theo yêu cầu Git ban đầu và yêu cầu tự động tiếp tục triển khai của chủ app; kiểm tra lịch sử `main` và URL production để xác nhận bản mới. Các trạng thái chưa push/proxy 403 bên dưới là lịch sử, không còn là tình trạng truy cập hiện tại. Runtime vẫn thiếu public URL/key Supabase, không có quyền quản trị cloud hoặc iPhone thật. V3 vẫn ở review kiến trúc.
 
-V1 local-first với 8 trang responsive, các form dữ liệu thật, database Dexie version 1, repository abstraction, business service, backup/restore và PWA offline. Không có backend/auth/cloud sync. Đọc README.md, AGENTS.md và docs/V1-SPEC.md để giữ quy tắc dữ liệu.
+Lượt tự động kiểm chứng bổ sung 08/10/2026: TypeScript, 49 unit tests, PostgreSQL SQL và 6 cloud mock E2E chạy lại đều đạt. Thêm `npm run test:http` để tự dựng/dọn fixture PostgreSQL + PostgREST thật và kiểm tra JWT/RLS/RPC/CAS/idempotency/soft delete/pagination/bootstrap; đã chạy đạt. CI thêm bước này. Xem `docs/v3/ARCHITECTURE.md` cho review V3 cập nhật đủ 20 mục; report cũ ngoài repo mô tả chỉ V1 đã lỗi thời. Runtime chưa có hai biến public Supabase hoặc quyền quản trị cloud, không có iPhone thật để kiểm chứng. Chưa thêm tính năng V3.
 
-## Chạy và kiểm tra
+URL chủ app cung cấp: `https://qltaichinh-web.pages.dev/`. Proxy môi trường trả CONNECT 403 (envoy), chưa đọc được website. Đã lưu hostname chính xác vào custom allowlist của draft, giữ preset; công cụ yêu cầu người dùng lưu/Publish môi trường. Sau khi áp dụng, thử HTTPS lại rồi kiểm tra site bằng profile trình duyệt test riêng. Không coi lỗi proxy là lỗi của app; không cố đi vòng proxy. Draft startup đã thêm hướng dẫn `test:http`; container/network test của lượt này đều đã dọn dẹp.
 
-Node 24; `npm ci`, `npm test`, `npm run build`. Khi đổi UI/PWA: build lại trước `npm run test:e2e`. Môi trường có Chromium hệ thống dùng `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`. Không đưa file backup cá nhân vào repo. `npm run dev` chỉ dành cho phát triển; điện thoại dùng Cloudflare production URL.
+Cập nhật 08/10/2026: đã thêm `ExpensePieChart` dùng chung cho Tổng quan và Báo cáo, tương tác chạm/bàn phím, lọc tháng và dùng offline. Không đổi schema/database/sync. Typecheck, 49 unit tests, build và 8 E2E desktop/mobile đạt. Chủ app xác nhận mới mở và dùng web, chưa kiểm chứng đồng bộ thật. Xem [điều kiện chuyển V3](v3/READINESS.md); chưa triển khai V3 hoặc push/deploy bản biểu đồ.
 
-## Việc còn lại cần quyền bên ngoài
+V2 được triển khai trong workspace theo yêu cầu kiểm chứng V2 trước V3. Chưa commit/push/Git operations trong lượt V2/V3 vì brief yêu cầu lệnh Git riêng. Không ghi V2 đã nghiệm thu production: chủ app chưa tạo Supabase project, chưa có URL deployment được kiểm chứng và chưa thử iPhone thật.
 
-Chủ tài khoản Cloudflare đã có tài khoản nhưng môi trường chưa được cấp quyền triển khai. Kết nối repo GitHub với Cloudflare Pages, build `npm run build`, output `dist`, branch `main`, Node 24. Hướng dẫn tại docs/DEPLOY.md. Sau khi có URL, ghi lại URL và kiểm tra HTTPS headers/manifest/offline, rồi kiểm tra iPhone thật. Không ghi rằng V1 đạt toàn bộ điều kiện production/iPhone trước khi có bằng chứng.
+Đọc AGENTS.md, README.md, docs/V2-SPEC.md, docs/v2/ARCHITECTURE.md, docs/v2/SETUP.md và docs/VALIDATION.md. Giữ tài chính V1, Dexie version 1 và các test hiện có. Source V2 gồm auth, user DB, atomic outbox, migration SQL/RLS, RPC CAS/idempotency/journal, bootstrap staging, scheduler, conflict UI, CSP chính xác và backup guard. Không đồng bộ settings wholesale; không thêm E2EE/AI/ngân hàng trong V2.
 
-## Các phiên làm việc song song
+Kiểm tra: `npm run typecheck`, `npm test`, `npm run test:sql` (PostgreSQL fixture localhost), `npm run build`, `npm run test:e2e`, `npm run test:cloud`. Với Chromium hệ thống dùng `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`. Không chạy thay đổi source/build đồng thời với browser suite. Test cloud dùng mock HTTP trong bản build riêng; SQL suite chạy migration thật và role thật trên PostgreSQL 17 nhưng không thay Supabase/PostgREST production.
 
-Mỗi phiên bắt đầu từ nhánh/ref mới nhất của GitHub. Dùng nhánh riêng/PR khi nhiều phiên cùng sửa; không force-push để thay đổi lịch sử main. Cloud task có checkout cô lập sẵn, không tạo thêm worktree trừ khi được yêu cầu. GitHub đồng bộ code; dữ liệu tài chính vẫn riêng từng thiết bị. V2/V3 chỉ triển khai khi người dùng cung cấp/yêu cầu phạm vi tương ứng.
+Bước kế tiếp: chủ app tạo Supabase theo SETUP, chạy migration, thêm public URL/key ở Cloudflare và Codex, kiểm tra signup/email/reset/session, hai thiết bị, RLS thực tế và iPhone PWA foreground/reconnect. Không yêu cầu gửi secret/service_role/database password trong chat. Khi có yêu cầu Git riêng, đưa mã lên nhánh deploy rồi kiểm tra Cloudflare. Chỉ chuyển V3 sau khi V2 đạt tất cả Definition of Done, bao gồm iOS thủ công. Brief V3 được giữ ở docs/V3-BRIEF.md; chưa triển khai tính năng V3.

@@ -1,3 +1,4 @@
+import { SyncPanel } from '../sync/SyncPanel';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -13,9 +14,10 @@ import {
   ChartNoAxesCombined,
 } from 'lucide-react';
 import { useApp } from '../app/context';
-import { backupService, downloadBackup, readBackup, type Backup } from '../services/backup/backup';
+import { AuthPanel } from '../auth/AuthPanel';
+import { downloadBackup, readBackup, type Backup } from '../services/backup/backup';
 import { requestPersistence, storageStatus } from '../services/storage/storage';
-import { finance } from '../services/finance';
+import { useLocalData } from '../db/context/LocalDataProvider';
 import { errorMessage, today } from '../utils/format';
 import { ErrorNotice, Modal, PageHeading } from '../components/ui';
 interface InstallPrompt extends Event {
@@ -24,6 +26,7 @@ interface InstallPrompt extends Event {
 }
 export function Settings({ offlineReady }: { offlineReady: boolean }) {
   const { data, notify } = useApp();
+  const { finance, backupService, db } = useLocalData();
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [backup, setBackup] = useState<Backup>();
@@ -85,6 +88,8 @@ export function Settings({ offlineReady }: { offlineReady: boolean }) {
         title="Cài đặt & dữ liệu"
         description="Dữ liệu thuộc về bạn. Giữ một bản sao ở nơi an toàn."
       />
+      <AuthPanel />
+      <SyncPanel />
       <div className="settings-links">
         {links.map((l) => (
           <Link to={l.to} key={l.to} className="panel">
@@ -107,6 +112,12 @@ export function Settings({ offlineReady }: { offlineReady: boolean }) {
             Backup JSON chứa toàn bộ dữ liệu, kể cả bản ghi đã xóa mềm. File chưa được mã hóa; hãy
             cất ở nơi riêng tư.
           </p>
+          {db.cloud && (
+            <p className="warning">
+              Hồ sơ cloud không cho phép thay toàn bộ dữ liệu bằng backup. Đăng xuất để khôi phục
+              vào sổ local riêng.
+            </p>
+          )}
           <div className="backup-info">
             <span>
               {data.transactions.length} giao dịch · {data.accounts.length} tài khoản
@@ -135,7 +146,7 @@ export function Settings({ offlineReady }: { offlineReady: boolean }) {
             </button>
             <button
               className="button secondary"
-              disabled={busy}
+              disabled={busy || db.cloud}
               onClick={() => fileInput.current?.click()}
             >
               <Upload size={18} />
@@ -197,8 +208,9 @@ export function Settings({ offlineReady }: { offlineReady: boolean }) {
             {offlineReady ? 'Đã lưu ứng dụng để dùng offline' : 'Đang kiểm tra bộ nhớ offline'}
           </p>
           <p className="muted">
-            Sau lần tải đầy đủ qua HTTPS, bạn có thể mở lại app không cần mạng. Dữ liệu chỉ nằm trên
-            thiết bị và trình duyệt hiện tại, chưa đồng bộ với thiết bị khác.
+            Sau lần tải đầy đủ qua HTTPS, bạn có thể mở lại app không cần mạng. Dữ liệu offline nằm
+            trong trình duyệt hiện tại. Khi bật cloud, mở app hoặc bấm Đồng bộ ngay để cập nhật giữa
+            các thiết bị.
           </p>
         </section>
       </div>
@@ -238,7 +250,7 @@ export function Settings({ offlineReady }: { offlineReady: boolean }) {
         </div>
       </section>
       <p className="version-note muted">
-        Sổ tiền · V1 · VND / vi-VN · Không có tài khoản đăng nhập hoặc đồng bộ cloud.
+        Sổ tiền · V2 · VND / vi-VN · Local-first, đồng bộ cloud tùy chọn.
       </p>
       {backup && (
         <Modal
