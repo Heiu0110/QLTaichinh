@@ -2,6 +2,8 @@
 
 ## Kiểm tra đã thực hiện trong môi trường phát triển
 
+- `npm ci --cache /workspace/.cache/npm`: cài lại dependencies từ lockfile thành công.
+- `npm run dev`: giao diện chạy, lưu giao dịch và reload vẫn giữ dữ liệu trong kiểm tra trình duyệt.
 - `npm test`: **17/17** kiểm thử nghiệp vụ/data layer đạt, sử dụng fake-indexeddb.
 - `npm run build`: TypeScript strict và production build thành công, sinh manifest/service worker và precache toàn bộ application shell + các trang tải theo nhu cầu.
 - `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e`: **6/6** kịch bản đạt trên Chromium desktop và mobile.

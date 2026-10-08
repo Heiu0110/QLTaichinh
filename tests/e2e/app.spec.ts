@@ -93,13 +93,11 @@ test('real finance flow: CRUD, filters, budgets, backup, restore and persistent 
   await page.getByRole('button', { name: 'Xóa giao dịch Cà phê sáng' }).click();
   await expect(page.getByTestId('transaction-row')).toHaveCount(1);
   await page.goto('/settings');
-  await page
-    .getByLabel('Chọn file backup')
-    .setInputFiles({
-      name: 'backup.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from(exported),
-    });
+  await page.getByLabel('Chọn file backup').setInputFiles({
+    name: 'backup.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(exported),
+  });
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(
     page.getByRole('dialog').getByRole('button', { name: 'Thay thế dữ liệu' }),
