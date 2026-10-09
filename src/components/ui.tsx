@@ -151,10 +151,12 @@ export function FormFooter({
   busy,
   error,
   onCancel,
+  disabled = false,
 }: {
   busy: boolean;
   error: string;
   onCancel: () => void;
+  disabled?: boolean;
 }) {
   return (
     <>
@@ -163,7 +165,7 @@ export function FormFooter({
         <button type="button" className="button secondary" onClick={onCancel} disabled={busy}>
           Hủy
         </button>
-        <button className="button primary" type="submit" disabled={busy}>
+        <button className="button primary" type="submit" disabled={busy || disabled}>
           {busy && <LoaderCircle size={18} className="spin" />}
           {busy ? 'Đang lưu…' : 'Lưu'}
         </button>

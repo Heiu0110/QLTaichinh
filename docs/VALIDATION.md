@@ -1,3 +1,11 @@
+# Sửa bộ chọn tài khoản chuyển tiền — 09/10/2026
+
+Form trước đây cho chọn placeholder rỗng, xóa lựa chọn tài khoản nhận khi nguồn trùng đích, và không hướng dẫn khi chỉ có một tài khoản. Select danh mục/tài khoản nhận cũng dùng lại cùng vị trí DOM khi đổi loại giao dịch. Bản sửa giữ danh sách option tài khoản ổn định (disable nguồn tại danh sách nhận), tách danh tính field danh mục/đích, tự chọn đích khác nguồn khi chuyển chế độ và đổi chỗ cặp tài khoản khi đổi nguồn sang đích hiện tại.
+
+Khi thiếu tài khoản, giải thích rõ chuyển tiền cần hai tài khoản khác nhau và chặn Lưu chưa hợp lệ. Có thể thêm tài khoản ngay trong form qua FinanceService hiện có; số tiền, ngày, ghi chú và loại giao dịch được giữ khi thêm/hủy. Không đổi schema hay quy tắc số dư/thu chi.
+
+49 unit tests, TypeScript/build và 10 E2E desktop/mobile Chromium đạt. Sau chỉnh vị trí hướng dẫn trong form thêm tài khoản, build và 2 regression E2E chuyển tiền chạy lại đạt. Regression kiểm tra một tài khoản, thêm/hủy tài khoản thứ hai không mất draft, đổi nguồn/đích, đổi qua lại loại giao dịch, lưu/reload/export đúng ID và số tiền; chuyển tiền vẫn không cộng vào thu/chi. Chưa kiểm chứng trực tiếp native picker trên iPhone/Safari thật; ảnh người dùng cho thấy tình trạng form nhưng không đủ xác nhận một lỗi engine Safari riêng.
+
 # V2 + biểu đồ đã triển khai — 08/10/2026
 
 Đã push commit `8ae280d8a40ed3156fb3c71d7898025c1a2db2f6` lên `origin/main`; native Git xác nhận remote ref. Cloudflare đã tự cập nhật tại **https://qltaichinh-web.pages.dev/**, entry asset `index-DBVeIlf6.js`, có `ExpensePieChart-PBfC_Bnh.js`. **8/8 E2E trên URL production mới đã đạt** ở desktop/mobile Chromium: CRUD, backup/restore, reload, responsive, PWA offline và Pie Chart đổi tháng/chọn danh mục/ngoại trừ thu nhập–chuyển tiền–xóa mềm.
