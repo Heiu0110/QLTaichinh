@@ -1,5 +1,7 @@
 # Handoff V2 + biểu đồ
 
+Bản sửa chọn tài khoản `f5cd62a` đã push và deploy trên https://qltaichinh-web.pages.dev/ ngày 09/10/2026; 2 regression E2E trên URL production đạt (desktop/mobile Chromium). Người dùng PWA cũ cần nhận bản cập nhật, không xóa IndexedDB/dữ liệu trình duyệt.
+
 Sửa lỗi 09/10/2026: bộ chọn tài khoản chuyển tiền có option ổn định, placeholder không chọn được, đích khác nguồn và đổi chiều không để rỗng. Có thông báo cần hai tài khoản và thêm tài khoản ngay trong form, giữ draft khi thêm/hủy. Xem tests/e2e/transfer-accounts.spec.ts; 49 unit tests, build và 10 E2E Chromium đạt, regression 2/2 chạy lại sau chỉnh hướng dẫn. Không đổi DB/sync; chưa kiểm chứng native Safari trên iPhone thật.
 
 Cập nhật 08/10/2026: mã V2 + Pie Chart đã push lên `origin/main` tại commit `8ae280d8a40ed3156fb3c71d7898025c1a2db2f6`. Cloudflare tự triển khai thành công tại https://qltaichinh-web.pages.dev/. Xem docs/VALIDATION.md và docs/DEPLOY.md; các ghi chú chưa push/proxy 403 ở lịch sử cũ đã được thay bằng kết quả này.

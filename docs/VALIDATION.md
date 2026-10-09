@@ -1,5 +1,7 @@
 # Sửa bộ chọn tài khoản chuyển tiền — 09/10/2026
 
+Đã push bản sửa `f5cd62a` lên main và xác nhận Cloudflare phục vụ entry `index-Jhu7xHL5.js`. **2/2 regression E2E trên URL production** https://qltaichinh-web.pages.dev/ đã đạt ở desktop/mobile Chromium, với browser context riêng và dữ liệu giả; không tác động dữ liệu của chủ app.
+
 Form trước đây cho chọn placeholder rỗng, xóa lựa chọn tài khoản nhận khi nguồn trùng đích, và không hướng dẫn khi chỉ có một tài khoản. Select danh mục/tài khoản nhận cũng dùng lại cùng vị trí DOM khi đổi loại giao dịch. Bản sửa giữ danh sách option tài khoản ổn định (disable nguồn tại danh sách nhận), tách danh tính field danh mục/đích, tự chọn đích khác nguồn khi chuyển chế độ và đổi chỗ cặp tài khoản khi đổi nguồn sang đích hiện tại.
 
 Khi thiếu tài khoản, giải thích rõ chuyển tiền cần hai tài khoản khác nhau và chặn Lưu chưa hợp lệ. Có thể thêm tài khoản ngay trong form qua FinanceService hiện có; số tiền, ngày, ghi chú và loại giao dịch được giữ khi thêm/hủy. Không đổi schema hay quy tắc số dư/thu chi.
