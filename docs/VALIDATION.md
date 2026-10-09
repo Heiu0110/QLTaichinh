@@ -1,5 +1,7 @@
 # Ba ngân hàng chọn sẵn — 09/10/2026
 
+Đã push `fd49251` và xác nhận Cloudflare triển khai tại https://qltaichinh-web.pages.dev/ (entry `index-byq4DIUA.js`). **2/2 E2E trên URL production** đạt ở desktop/mobile Chromium, gồm touch, keyboard, ba ngân hàng, ảnh logo offline, ghi thu/chi/chuyển và kiểm tra backup.
+
 Theo yêu cầu mới, bộ chọn tài khoản có MB Bank, VietinBank và Sacombank kèm logo cho Chi tiêu, Thu nhập, Chuyển tiền (nguồn và đích). Tài khoản cũ vẫn chọn được. Bỏ luồng thêm tài khoản ngay trong form để không yêu cầu chi tiết ngân hàng; ghi chú giữ như trước. Combobox hiển thị logo trong danh sách, hỗ trợ chạm/bàn phím/Escape và chặn nguồn trùng đích.
 
 Logo WebP được lưu cùng app từ vietqr-zero@1.0.0, có nguồn và license ở public/banks; không thêm dependency/runtime request tới ngân hàng. Service worker precache đủ ba ảnh. Bộ chọn hiển thị preset ngay cả với dữ liệu cũ; chỉ khi lưu mới tạo account UUID/initialBalance=0 qua service trong cùng transaction với giao dịch/outbox. Nếu có tài khoản bank cùng tên được nhận diện chính xác thì dùng ID hiện có, không đổi số dư/metadata; không gộp các tài khoản trùng tên hoặc phục hồi tombstone.

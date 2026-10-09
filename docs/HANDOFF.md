@@ -1,5 +1,7 @@
 # Handoff V2 + biểu đồ
 
+Bản ba ngân hàng có logo `fd49251` đã deploy tại https://qltaichinh-web.pages.dev/; 2/2 E2E trên URL production đạt ngày 09/10/2026. Đây là luồng mới thay việc yêu cầu thêm tài khoản thủ công trong form chuyển tiền.
+
 Yêu cầu đơn giản hóa tiếp theo ngày 09/10/2026: form giao dịch có sẵn MB Bank, VietinBank và Sacombank kèm logo local/offline, dùng chung cho chi/thu/chuyển. Dùng AccountSelect hiển thị logo trong danh sách thay native select. Đã bỏ luồng thêm tài khoản lồng trong giao dịch theo yêu cầu mới; trang Tài khoản vẫn quản lý tài khoản như trước. Chọn preset rồi Lưu mới tạo account UUID thông thường qua FinanceService, cùng transaction/outbox với giao dịch; không ghi dữ liệu chỉ vì mở form, không đổi schema hay thêm dependency. Tài khoản cũ và số dư giữ nguyên. 53 unit tests và 10 E2E đạt; tests/e2e/transfer-accounts.spec.ts nay kiểm tra ba ngân hàng, keyboard/touch, offline logo và cả ba loại giao dịch.
 
 Bản sửa chọn tài khoản `f5cd62a` đã push và deploy trên https://qltaichinh-web.pages.dev/ ngày 09/10/2026; 2 regression E2E trên URL production đạt (desktop/mobile Chromium). Người dùng PWA cũ cần nhận bản cập nhật, không xóa IndexedDB/dữ liệu trình duyệt.
