@@ -1,4 +1,5 @@
 import { database, type FinanceDatabase } from '../db/database';
+import { bankPresets, matchesBank } from '../utils/bankAccounts';
 import { DexieRepository, DexieTransactionRepository } from '../db/repositories/repository';
 import {
   accountSchema,
@@ -14,6 +15,7 @@ import {
   type FinanceData,
   type SavingsGoal,
   type Transaction,
+  stamp,
 } from '../types/models';
 export class FinanceService {
   readonly accounts;
@@ -70,6 +72,42 @@ export class FinanceService {
       }
       if (editing) await this.transactions.update(parsed.id, parsed, expected);
       else await this.transactions.create(parsed);
+    });
+  }
+  // Only materialize preset banks when the user saves a transaction. Account,
+  // transaction and outbox writes share one transaction, including on failure.
+  async saveTransactionWithAccountChoices(
+    data: Transaction,
+    editing = false,
+    expected?: Transaction,
+  ) {
+    await this.db.transaction('rw', this.db.tables, async () => {
+      await this.db.assertWritable();
+      const resolve = async (selection: string) => {
+        const bank = bankPresets.find((preset) => preset.id === selection);
+        if (!bank) return selection;
+        const matches = (await this.accounts.getAll()).filter((account) =>
+          matchesBank(account, bank),
+        );
+        if (matches.length > 1)
+          throw new Error('Có nhiều tài khoản ngân hàng cùng tên. Hãy chọn lại tài khoản cụ thể.');
+        if (matches[0]) return matches[0].id;
+        const account: Account = {
+          ...stamp(),
+          name: bank.name,
+          type: 'bank',
+          currency: 'VND',
+          initialBalance: 0,
+        };
+        await this.saveAccount(account);
+        return account.id;
+      };
+      const accountId = await resolve(data.accountId);
+      const toAccountId =
+        data.type === 'transfer' && data.toAccountId
+          ? await resolve(data.toAccountId)
+          : data.toAccountId;
+      await this.saveTransaction({ ...data, accountId, toAccountId }, editing, expected);
     });
   }
   async saveAccount(data: Account, editing = false, expected?: Account) {

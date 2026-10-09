@@ -828,6 +828,63 @@ thead {
 .field textarea {
   resize: vertical;
 }
+.account-select {
+  position: relative;
+  font-weight: 400;
+}
+.account-select-trigger,
+.account-select-options button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+.account-select img {
+  width: 68px;
+  height: 28px;
+  object-fit: contain;
+  flex: 0 0 68px;
+}
+.account-select span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.account-select-options {
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  margin-top: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+.account-select-options button {
+  border-color: transparent;
+}
+.account-select-options button.active,
+.account-select-options button[aria-selected='true'] {
+  background: #eef6f3;
+}
+.account-select-options button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.account-select-trigger:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
 .modal {
   border: 0;
   border-radius: 16px;

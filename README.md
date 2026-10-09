@@ -18,6 +18,7 @@ Deploy lên **Cloudflare Pages** theo [hướng dẫn này](docs/DEPLOY.md). Sau
 - Tổng quan tài sản ròng, thu/chi và dòng tiền tháng hiện tại, ngân sách và giao dịch gần đây.
 - Thêm/sửa/xóa mềm giao dịch; lọc ngày, loại, tài khoản, danh mục và tìm ghi chú.
 - Thu nhập, chi tiêu và chuyển tiền giữa hai tài khoản. Chuyển tiền không tính thành thu/chi.
+- Chọn nhanh MB Bank, VietinBank hoặc Sacombank kèm logo trong cả ba loại giao dịch; không cần nhập chi tiết ngân hàng. Logo dùng được offline, tài khoản có sẵn vẫn được giữ.
 - Tài khoản tiền mặt, ngân hàng, ví điện tử, thẻ tín dụng và khác. Số dư được tính từ số dư ban đầu + giao dịch. Số dư ban đầu âm thể hiện dư nợ.
 - 14 danh mục mặc định; tạo/sửa tên/xóa danh mục. Không xóa tài khoản/danh mục đang được bản ghi hoạt động sử dụng.
 - Ngân sách theo tháng, cho tổng chi tiêu hoặc danh mục; hiển thị số tiền và phần trăm đã dùng. Tổng ngân sách không cộng trùng ngân sách tổng và theo danh mục.

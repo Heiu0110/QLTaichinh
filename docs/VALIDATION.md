@@ -1,3 +1,11 @@
+# Ba ngân hàng chọn sẵn — 09/10/2026
+
+Theo yêu cầu mới, bộ chọn tài khoản có MB Bank, VietinBank và Sacombank kèm logo cho Chi tiêu, Thu nhập, Chuyển tiền (nguồn và đích). Tài khoản cũ vẫn chọn được. Bỏ luồng thêm tài khoản ngay trong form để không yêu cầu chi tiết ngân hàng; ghi chú giữ như trước. Combobox hiển thị logo trong danh sách, hỗ trợ chạm/bàn phím/Escape và chặn nguồn trùng đích.
+
+Logo WebP được lưu cùng app từ vietqr-zero@1.0.0, có nguồn và license ở public/banks; không thêm dependency/runtime request tới ngân hàng. Service worker precache đủ ba ảnh. Bộ chọn hiển thị preset ngay cả với dữ liệu cũ; chỉ khi lưu mới tạo account UUID/initialBalance=0 qua service trong cùng transaction với giao dịch/outbox. Nếu có tài khoản bank cùng tên được nhận diện chính xác thì dùng ID hiện có, không đổi số dư/metadata; không gộp các tài khoản trùng tên hoặc phục hồi tombstone.
+
+TypeScript/build, **53 unit tests** và **10 E2E desktop/mobile Chromium** đạt. Bốn test mới kiểm tra lưu đồng thời không nhân đôi preset trong cùng DB, thứ tự parent/outbox, rollback khi giao dịch lỗi, giữ account cũ/số dư, và không đoán giữa nhiều tài khoản trùng tên. E2E thay luồng thêm tài khoản cũ bằng yêu cầu mới: ba lựa chọn/logo, keyboard và touch, MB chi 50.000, VietinBank thu 200.000, offline chuyển 75.000 sang Sacombank, đổi chiều, giữ tổng thu/chi và export UUID chính xác. Đã xem ảnh giao diện mobile. Chưa kiểm chứng trên iPhone/Safari thật.
+
 # Sửa bộ chọn tài khoản chuyển tiền — 09/10/2026
 
 Đã push bản sửa `f5cd62a` lên main và xác nhận Cloudflare phục vụ entry `index-Jhu7xHL5.js`. **2/2 regression E2E trên URL production** https://qltaichinh-web.pages.dev/ đã đạt ở desktop/mobile Chromium, với browser context riêng và dữ liệu giả; không tác động dữ liệu của chủ app.

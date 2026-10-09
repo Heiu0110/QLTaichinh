@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { AccountSelect } from './AccountSelect';
+import { accountChoices } from '../utils/bankAccounts';
 import { useApp, type Editor } from '../app/context';
 import { useLocalData } from '../db/context/LocalDataProvider';
 import { requestPersistence } from '../services/storage/storage';
@@ -54,11 +56,11 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
   const [categoryId, setCategoryId] = useState(value?.categoryId ?? '');
   const [date, setDate] = useState(value?.date ?? today());
   const [note, setNote] = useState(value?.note ?? '');
-  const [addingAccount, setAddingAccount] = useState(false);
-  const hasSource = data.accounts.some((a) => a.id === accountId);
-  const hasDestination = data.accounts.some((a) => a.id === toAccountId && a.id !== accountId);
+  const choices = accountChoices(data.accounts);
+  const hasSource = choices.some((a) => a.id === accountId);
+  const hasDestination = choices.some((a) => a.id === toAccountId && a.id !== accountId);
   const submit = save.submit(async () => {
-    await finance.saveTransaction(
+    await finance.saveTransactionWithAccountChoices(
       {
         ...(value ?? stamp()),
         type,
@@ -74,17 +76,6 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
       value,
     );
   });
-  if (addingAccount)
-    return (
-      <AccountForm
-        onClose={() => setAddingAccount(false)}
-        onDone={() => setAddingAccount(false)}
-        onCreated={(account) => {
-          if (!hasSource) setAccountId(account.id);
-          else if (type === 'transfer') setToAccountId(account.id);
-        }}
-      />
-    );
   return (
     <form onSubmit={submit} className="editor-form">
       <div className="segmented" role="group" aria-label="Loại giao dịch">
@@ -98,7 +89,7 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
               setType(t);
               setCategoryId('');
               if (t === 'transfer' && !hasDestination)
-                setToAccountId(data.accounts.find((a) => a.id !== accountId)?.id ?? '');
+                setToAccountId(choices.find((a) => a.id !== accountId)?.id ?? '');
             }}
           >
             {{ expense: 'Chi tiêu', income: 'Thu nhập', transfer: 'Chuyển tiền' }[t]}
@@ -109,36 +100,24 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
         <MoneyInput value={amount} onChange={setAmount} />
       </Field>
       <Field label={type === 'transfer' ? 'Tài khoản chuyển' : 'Tài khoản'}>
-        <select
-          required
+        <AccountSelect
           value={accountId}
-          onChange={(e) => {
-            setAccountId(e.target.value);
-            if (e.target.value === toAccountId) setToAccountId(hasSource ? accountId : '');
+          options={choices}
+          onChange={(next) => {
+            setAccountId(next);
+            if (next === toAccountId) setToAccountId(hasSource ? accountId : '');
           }}
-        >
-          <option value="" disabled>
-            Chọn tài khoản
-          </option>
-          {data.accounts.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
+        />
       </Field>
       {type === 'transfer' ? (
         <Field key="destination" label="Tài khoản nhận">
-          <select required value={toAccountId} onChange={(e) => setToAccountId(e.target.value)}>
-            <option value="" disabled>
-              Chọn tài khoản nhận
-            </option>
-            {data.accounts.map((a) => (
-              <option key={a.id} value={a.id} disabled={a.id === accountId}>
-                {a.name}
-              </option>
-            ))}
-          </select>
+          <AccountSelect
+            value={toAccountId}
+            options={choices}
+            disabledId={accountId}
+            placeholder="Chọn tài khoản nhận"
+            onChange={setToAccountId}
+          />
         </Field>
       ) : (
         <Field key={`category-${type}`} label="Danh mục">
@@ -154,20 +133,6 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
           </select>
         </Field>
       )}
-      {type === 'transfer' && data.accounts.length < 2 && (
-        <p className="warning" role="status">
-          Chuyển tiền cần ít nhất hai tài khoản khác nhau. Hãy thêm tài khoản ngân hàng hoặc ví nhận
-          tiền.
-        </p>
-      )}
-      <button
-        type="button"
-        className="button secondary"
-        onClick={() => setAddingAccount(true)}
-        disabled={save.busy}
-      >
-        Thêm tài khoản mới
-      </button>
       <Field label="Ngày giao dịch">
         <input
           required
@@ -187,9 +152,6 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
           placeholder="Khoản này dành cho điều gì?"
         />
       </Field>
-      {!data.accounts.length && (
-        <p className="warning">Bạn cần tạo tài khoản trước khi thêm giao dịch.</p>
-      )}
       <FormFooter
         {...save}
         onCancel={onClose}
@@ -198,12 +160,7 @@ function TransactionForm({ value, onDone, onClose }: FormProps<Transaction>) {
     </form>
   );
 }
-function AccountForm({
-  value,
-  onDone,
-  onClose,
-  onCreated,
-}: FormProps<Account> & { onCreated?: (account: Account) => void }) {
+function AccountForm({ value, onDone, onClose }: FormProps<Account>) {
   const { finance } = useLocalData();
   const save = useSave(onDone);
   const [name, setName] = useState(value?.name ?? '');
@@ -221,15 +178,8 @@ function AccountForm({
           currency: 'VND',
         };
         await finance.saveAccount(account, !!value, value);
-        if (!value) onCreated?.(account);
       })}
     >
-      {onCreated && (
-        <>
-          <h3>Thêm tài khoản mới</h3>
-          <p className="muted">Thông tin giao dịch đang nhập được giữ lại.</p>
-        </>
-      )}
       <Field label="Tên tài khoản">
         <input
           autoFocus

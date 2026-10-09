@@ -69,7 +69,7 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           clientsClaim: true,
-          globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+          globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2}'],
           navigateFallback: '/index.html',
           cleanupOutdatedCaches: true,
           navigateFallbackDenylist: [/^\/api\//],
